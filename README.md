@@ -1,3 +1,11 @@
+==============================================================================
+it is a fork!
+
+one minor issue I have found in source (issue is posted to owner of library)
+
+I fix this issue to be able to continue my project
+============================================================================== 
+
 go-cloudstack
 =============
 A CloudStack API client enabling Go programs to interact with CloudStack in a simple and uniform way

@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"net/url"
 	"strconv"
+	"fmt"
 )
 
 type GetApiLimitParams struct {
@@ -473,13 +474,15 @@ func (s *LimitService) UpdateResourceLimit(p *UpdateResourceLimitParams) (*Updat
 	if err != nil {
 		return nil, err
 	}
-
+	str := string (resp)
+	fmt.Println(str)
 	var r UpdateResourceLimitResponse
-	if err := json.Unmarshal(resp, &r); err != nil {
+	interimResp := map[string]*UpdateResourceLimitResponse {"resourcelimit":&r}
+	if err := json.Unmarshal(resp, &interimResp); err != nil {
 		return nil, err
 	}
 
-	return &r, nil
+	return interimResp["resourcelimit"], nil
 }
 
 type UpdateResourceLimitResponse struct {
