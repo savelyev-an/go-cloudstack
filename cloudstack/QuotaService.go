@@ -59,3 +59,83 @@ func (s *QuotaService) QuotaIsEnabled(p *QuotaIsEnabledParams) (*QuotaIsEnabledR
 type QuotaIsEnabledResponse struct {
 	Isenabled bool `json:"isenabled"`
 }
+
+type QuotaBalanceParams struct {
+	p map[string]interface{}
+}
+
+func (p *QuotaBalanceParams) SetDomainid(v string) {
+	if p.p == nil {
+		p.p = make(map[string]interface{})
+	}
+	p.p["domainid"] = v
+	return
+}
+
+func (p *QuotaBalanceParams) SetAccount(v string) {
+	if p.p == nil {
+		p.p = make(map[string]interface{})
+	}
+	p.p["account"] = v
+	return
+}
+
+func (p *QuotaBalanceParams) SetStartDate(v string) {
+	if p.p == nil {
+		p.p = make(map[string]interface{})
+	}
+	p.p["startdate"] = v
+	return
+}
+
+func (p *QuotaBalanceParams) SetEndDate(v string) {
+	if p.p == nil {
+		p.p = make(map[string]interface{})
+	}
+	p.p["enddate"] = v
+	return
+}
+
+func (p *QuotaBalanceParams) toURLValues() url.Values {
+	u := url.Values{}
+	if p.p == nil {
+		return u
+	}
+	for key, value := range p.p {
+		u.Set(key, value.(string))
+	}
+	return u
+}
+
+// Return balance // Only simple request
+func (s *QuotaService) QuotaBalance(p *QuotaBalanceParams) (*QuotaBalanceResponse, error) {
+	resp, err := s.cs.newRequest("quotaBalance", p.toURLValues())
+	if err != nil {
+		return nil, err
+	}
+
+	var r QuotaBalanceResponse
+	if err := json.Unmarshal(resp, &r); err != nil {
+		return nil, err
+	}
+
+	return &r, nil
+}
+
+type QuotaBalanceResponse struct {
+	Balance QuotaBalance `json:"balance"`
+}
+
+type QuotaBalance struct {
+	StartQuota float64 `json:"startquota"`
+	EndQuota float64 `json:"endquota"`
+	Credits []QuotaCredits `json:"credits"`
+	Startdate string `json:"startdate"`
+	Enddate string `json:"enddate"`
+	Currency string `json:"currency"`
+}
+
+type QuotaCredits struct {
+	Credits float64 `json:"credits"`
+	UpdatedOon string `json:"updated_on"`
+}
