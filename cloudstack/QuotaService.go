@@ -60,6 +60,7 @@ type QuotaIsEnabledResponse struct {
 	Isenabled bool `json:"isenabled"`
 }
 
+// Quota Balance
 type QuotaBalanceParams struct {
 	p map[string]interface{}
 }
@@ -80,6 +81,7 @@ func (p *QuotaBalanceParams) SetAccount(v string) {
 	return
 }
 
+// Not required
 func (p *QuotaBalanceParams) SetStartDate(v string) {
 	if p.p == nil {
 		p.p = make(map[string]interface{})
@@ -88,6 +90,7 @@ func (p *QuotaBalanceParams) SetStartDate(v string) {
 	return
 }
 
+// Not required
 func (p *QuotaBalanceParams) SetEndDate(v string) {
 	if p.p == nil {
 		p.p = make(map[string]interface{})
@@ -138,4 +141,72 @@ type QuotaBalance struct {
 type QuotaCredits struct {
 	Credits float64 `json:"credits"`
 	UpdatedOon string `json:"updated_on"`
+}
+
+
+// Quota Summary - Undocumented API, return not Valid Id's ======================================
+type QuotaSummaryParams struct {
+	p map[string]interface{}
+}
+
+// Not required
+func (p *QuotaSummaryParams) SetDomainid(v string) {
+	if p.p == nil {
+		p.p = make(map[string]interface{})
+	}
+	p.p["domainid"] = v
+	return
+}
+
+// Not required
+func (p *QuotaSummaryParams) SetAccount(v string) {
+	if p.p == nil {
+		p.p = make(map[string]interface{})
+	}
+	p.p["account"] = v
+	return
+}
+
+func (p *QuotaSummaryParams) toURLValues() url.Values {
+	u := url.Values{}
+	if p.p == nil {
+		return u
+	}
+	for key, value := range p.p {
+		u.Set(key, value.(string))
+	}
+	return u
+}
+
+// Return balance // Only simple request
+func (s *QuotaService) QuotaSummary(p *QuotaSummaryParams) (*QuotaSummaryResponse, error) {
+	resp, err := s.cs.newRequest("quotaSummary", p.toURLValues())
+	if err != nil {
+		return nil, err
+	}
+
+	var r QuotaSummaryResponse
+	if err := json.Unmarshal(resp, &r); err != nil {
+		return nil, err
+	}
+
+	return &r, nil
+}
+
+type QuotaSummaryResponse struct {
+	Count     int64          `json:"count"`
+	Summaries []QuotaSummary `json:"summary"`
+}
+// This is not valid id's!
+type QuotaSummary struct {
+	AccountId int64 `json:"accountid"`
+	Account string `json:"account"`
+	DomainId int64 `json:"domainid"`
+	Domain string `json:"domain"`
+	Balance float64 `json:"balance"`
+	State string `json:"state"`
+	Quota float64 `json:"quota"`
+	Startdate string `json:"startdate"`
+	Enddate string `json:"enddate"`
+	Currency string `json:"currency"`
 }

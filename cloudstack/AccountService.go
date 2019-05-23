@@ -982,8 +982,8 @@ func (p *ListAccountsParams) toURLValues() url.Values {
 		vv := strconv.FormatBool(v.(bool))
 		u.Set("listall", vv)
 	}
-	if v, found := p.p["name"]; found {
-		u.Set("name", v.(string))
+	if v, found := p.p["account"]; found {
+		u.Set("account", v.(string))
 	}
 	if v, found := p.p["page"]; found {
 		vv := strconv.Itoa(v.(int))
@@ -1055,11 +1055,11 @@ func (p *ListAccountsParams) SetListall(v bool) {
 	return
 }
 
-func (p *ListAccountsParams) SetName(v string) {
+func (p *ListAccountsParams) SetAccount(v string) {
 	if p.p == nil {
 		p.p = make(map[string]interface{})
 	}
-	p.p["name"] = v
+	p.p["account"] = v
 	return
 }
 
